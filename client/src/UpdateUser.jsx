@@ -8,9 +8,9 @@ function UpdateUser() {
   const [email,setEmail] = useState("");
   const [age,setAge] = useState("");
   const navigate = useNavigate();
-
+const API_URL = process.env.REACT_APP_API_URL;
   useEffect(()=>{
-      axios.get('http://localhost:3001/getuser/' + id)
+      axios.get(`${ API_URL}/getUser/` + id)
       .then(result =>{
         console.log(result)
         setName(result.data.name || "")
@@ -23,7 +23,7 @@ function UpdateUser() {
 
     const Update = (e) => {
       e.preventDefault()
-      axios.put("http://localhost:3001/updateUser/"+id, {name,email,age})
+      axios.put(`${ API_URL}/updateUser/`+id, {name,email,age})
           .then(result =>{
             console.log(result)
             navigate("/")

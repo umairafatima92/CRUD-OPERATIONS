@@ -9,8 +9,9 @@ function CreateUser() {
   const [age,setAge] = useState();
   const navigate = useNavigate();
   const submit = (e) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     e.preventDefault();
-    axios.post("http://localhost:3001/createUser", {name,email,age})
+    axios.post(`${ API_URL}/createUser`, {name,email,age})
     .then(result =>{
       console.log(result)
       navigate("/")
