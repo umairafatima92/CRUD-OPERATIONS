@@ -9,7 +9,7 @@ function CreateUser() {
   const [age,setAge] = useState();
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
-console.log("API URL:", API_URL);
+console.log("API URL:", process.env.REACT_APP_API_URL);
 
 
   const submit = (e) => {
