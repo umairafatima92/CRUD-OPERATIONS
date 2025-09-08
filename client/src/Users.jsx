@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+
 function Users() {
   const [users, setUsers] = useState([]);
+
+  const API_URL = process.env.REACT_APP_API_URL;
+
+
   useEffect(()=>{
-    axios.get('http://localhost:3001')
+    axios.get(`${ API_URL}`)
     .then(result =>setUsers(result.data))
     .catch(err => console.log(err))
   },[])
 
   const handleDelete = (id)=>{
-    axios.delete('http://localhost:3001/deleteUser/'+id)
+    axios.delete(`${ API_URL}/deleteUser/`+id)
     .then(res => {
       console.log(res)
       window.location.reload()

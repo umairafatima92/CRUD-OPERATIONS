@@ -9,6 +9,8 @@ function UpdateUser() {
   const [age,setAge] = useState("");
   const navigate = useNavigate();
 const API_URL = process.env.REACT_APP_API_URL;
+
+
   useEffect(()=>{
       axios.get(`${ API_URL}/getUser/` + id)
       .then(result =>{

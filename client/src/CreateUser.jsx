@@ -8,8 +8,12 @@ function CreateUser() {
   const [email,setEmail] = useState();
   const [age,setAge] = useState();
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
+
+
+  
   const submit = (e) => {
-    const API_URL = process.env.REACT_APP_API_URL;
+    
     e.preventDefault();
     axios.post(`${ API_URL}/createUser`, {name,email,age})
     .then(result =>{
