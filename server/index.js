@@ -13,7 +13,7 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:5173",
 
-    "https://crud-client-khaki.vercel.app"
+    "crud-client-qhp0afgwp-umaira-fatimas-projects.vercel.app"
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
