@@ -1,53 +1,93 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const userModel = require('./models/users')
+const userModel = require('./models/users');
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
+// ===== BODY PARSER =====
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
+// ===== CORS HANDLER FOR VERCEL =====
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "http://localhost:5173", 
+    "https://crud-client-khaki.vercel.app"
+  ];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-app.get('/',(req,res)=>{
-    userModel.find({})
-    .then(users=>res.json(users))
-    .catch(err => res.json(err))
+  // Handle preflight OPTIONS requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+// ===== MONGOOSE CONNECTION =====
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.log(err));
 
-app.get('/getUser/:id', (req , res) => {
-        const id = req.params.id;
-        userModel.findById({_id:id})
-        .then(users=>res.json(users))
-    .catch(err => res.json(err))
+// ===== ROUTES =====
 
-    })
+// Get all users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await userModel.find({});
+    res.json(users);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-app.put('/updateUser/:id',(req,res) => {
-    const id = req.params.id;
-    userModel.findByIdAndUpdate({_id:id}, {name:req.body.name, email:req.body.email, age:req.body.age})
-    .then(users=>res.json(users))
-    .catch(err => res.json(err))
-})
+// Get single user
+app.get('/getUser/:id', async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-app.delete('/deleteUser/:id', (req,res) => {
-    const id = req.params.id;
-    userModel.findByIdAndDelete({_id:id})
-    .then(users=>res.json(users))
-    .catch(err => res.json(err))
-})
+// Create user
+app.post('/createUser', async (req, res) => {
+  try {
+    const user = await userModel.create(req.body);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-app.post("/createUser" ,(req,res)=>{
-    userModel.create(req.body)
-    .then(users => res.json(users))
-    .catch(err =>res.json(err))
-})
+// Update user
+app.put('/updateUser/:id', async (req, res) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-app.listen(3001,()=>{
-    console.log("Server is Running");
+// Delete user
+app.delete('/deleteUser/:id', async (req, res) => {
+  try {
+    const user = await userModel.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted", user });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
-    
-
-
-})
+// Export for Vercel (IMPORTANT!)
+module.exports = app;

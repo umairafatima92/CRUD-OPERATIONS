@@ -1,33 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import axios from "axios";
-
 
 function Users() {
   const [users, setUsers] = useState([]);
 
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
 
-  useEffect(()=>{
-    axios.get(`${ API_URL}`)
-    .then(result =>setUsers(result.data))
-    .catch(err => console.log(err))
-  },[])
+  // Fetch all users
+  useEffect(() => {
+    axios.get(`${API_URL}/`) // backend route for all users
+      .then(result => setUsers(result.data))
+      .catch(err => console.log(err));
+  }, []);
 
-  const handleDelete = (id)=>{
-    axios.delete(`${ API_URL}/deleteUser/`+id)
-    .then(res => {
-      console.log(res)
-      window.location.reload()
-    })
-    .catch(err => console.log(err))
+  // Delete a user
+  const handleDelete = (id) => {
+    axios.delete(`${API_URL}/deleteUser/${id}`)
+      .then(res => {
+        console.log(res.data);
+        // remove deleted user from state instead of reloading page
+        setUsers(users.filter(user => user._id !== id));
+      })
+      .catch(err => console.log(err));
   }
 
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
       <div className='w-50 bg-white rounded p-3'>
-        <Link to="/create" className='btn btn-success'>Add +</Link>
+        <Link to="/create" className='btn btn-success mb-3'>Add +</Link>
         <table className='table'>
           <thead>
             <tr>
@@ -38,19 +40,17 @@ function Users() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => {
-              return (
-                <tr key={index}>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.age}</td>
-                  <td>
-                    <Link to={`/update/${user._id}`} className='btn btn-success'>Update</Link>
-                    <button className='btn btn-danger' onClick={()=>handleDelete(user._id)}>Delete</button>
-                  </td>
-                </tr>
-              )
-            })}
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.age}</td>
+                <td>
+                  <Link to={`/update/${user._id}`} className='btn btn-success me-2'>Update</Link>
+                  <button className='btn btn-danger' onClick={() => handleDelete(user._id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

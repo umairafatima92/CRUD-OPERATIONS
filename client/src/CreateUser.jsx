@@ -1,50 +1,50 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function CreateUser() {
-  const [name,setName] = useState();
-  const [email,setEmail] = useState();
-  const [age,setAge] = useState();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState('');
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;
-console.log("API URL:", process.env.REACT_APP_API_URL);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+  console.log("API URL:", API_URL);
 
   const submit = (e) => {
-    
     e.preventDefault();
-    axios.post(`${ API_URL}/createUser`, {name,email,age})
-    .then(result =>{
-      console.log(result)
-      navigate("/")
-    }
-  )
-    .catch(err => console.log(err))
+    axios.post(`${API_URL}/createUser`, { name, email, age })
+      .then(result => {
+        console.log(result);
+        navigate("/");
+      })
+      .catch(err => console.log(err));
   }
+
   return (
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
       <div className='w-50 bg-white rounded p-3'>
         <form onSubmit={submit}>
           <h2>Add User</h2>
+
           <div className='mb-2'>
-            <label htmlFor="name">Name</label>
-            <input type='text' placeholder='Enter Name' className='form-control' 
-            onChange={(e) =>setName(e.target.value)} />
+            <label>Name</label>
+            <input type='text' placeholder='Enter Name' className='form-control'
+              onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className='mb-2'>
-            <label htmlFor="email">Email</label>
+            <label>Email</label>
             <input type='email' placeholder='Enter Email' className='form-control'
-            onChange={(e) =>setEmail(e.target.value)} />
+              onChange={(e) => setEmail(e.target.value)} />
           </div>
 
           <div className='mb-2'>
-            <label htmlFor="age">Age</label>
-            <input type='text' placeholder='Enter Age' className='form-control' 
-            onChange={(e) =>setAge(e.target.value)}/>
+            <label>Age</label>
+            <input type='text' placeholder='Enter Age' className='form-control'
+              onChange={(e) => setAge(e.target.value)} />
           </div>
+
           <button className='btn btn-success'>Submit</button>
         </form>
       </div>
