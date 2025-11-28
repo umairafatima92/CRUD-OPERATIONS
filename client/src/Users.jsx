@@ -10,7 +10,7 @@ function Users() {
 
   // Fetch all users
   useEffect(() => {
-    axios.get(`${API_URL}/`) // backend route for all users
+    axios.get(`${API_URL}/`) 
       .then(result => setUsers(result.data))
       .catch(err => console.log(err));
   }, []);
@@ -20,7 +20,7 @@ function Users() {
     axios.delete(`${API_URL}/deleteUser/${id}`)
       .then(res => {
         console.log(res.data);
-        // remove deleted user from state instead of reloading page
+        
         setUsers(users.filter(user => user._id !== id));
       })
       .catch(err => console.log(err));
