@@ -10,7 +10,7 @@ function Users() {
 
   // Fetch all users
   useEffect(() => {
-    axios.get(`${API_URL}/`) 
+    axios.get(`${API_URL}/users`) 
       .then(result => setUsers(result.data))
       .catch(err => console.log(err));
   }, []);
