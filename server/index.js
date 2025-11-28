@@ -5,14 +5,14 @@ require("dotenv").config();
 
 const app = express();
 
-
+// BODY PARSER 
 app.use(express.json());
 
-
+// CORS HANDLER FOR VERCEL
 app.use((req, res, next) => {
   const allowedOrigins = [
     "http://localhost:5173",
-    "http://localhost:5174", 
+
     "https://crud-client-khaki.vercel.app"
   ];
   const origin = req.headers.origin;
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
- 
+  
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//  MONGOOSE CONNECTION
+//MONGOOSE CONNECTION 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -39,20 +39,11 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.log("MongoDB connection error:", err));
 
+//  ROUTES
 
-
+// Root route
 app.get('/', (req, res) => {
-  res.json({ 
-    message: "CRUD Server is running!", 
-    status: "OK",
-    endpoints: {
-      getUsers: "/users",
-      getUser: "/getUser/:id",
-      createUser: "/createUser",
-      updateUser: "/updateUser/:id",
-      deleteUser: "/deleteUser/:id"
-    }
-  });
+  res.json({ message: "Server is running" });
 });
 
 // Get all users
@@ -111,6 +102,7 @@ app.put('/updateUser/:id', async (req, res) => {
   }
 });
 
+// Delete user
 app.delete('/deleteUser/:id', async (req, res) => {
   try {
     const user = await userModel.findByIdAndDelete(req.params.id);
@@ -125,10 +117,4 @@ app.delete('/deleteUser/:id', async (req, res) => {
 });
 
 
-app.use((req, res) => {
-  res.status(404).json({ error: "Route not found" });
-});
-
-
 module.exports = app;
-
